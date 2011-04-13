@@ -1,7 +1,7 @@
 ============
 Sea Cucumber
 ============
-:Info: A Django email backend for Amazon Simple Email Service, backed by celery_
+:Info: A Django email backend for Amazon Simple Email Service, backed by django-celery_
 :Author: DUO Interactive, LLC
 :Inspired by: Harry Marr's django-ses_.
 
@@ -9,7 +9,7 @@ A bird's eye view
 =================
 Sea Cucumber is a mail backend for Django_. Instead of sending emails
 through a traditional SMTP mail server, Sea Cucumber routes email through
-Amazon Web Services' excellent Simple Email Service (SES_) via celery.
+Amazon Web Services' excellent Simple Email Service (SES_) via django-celery_.
 
 Why SES instead of SMTP?
 ========================
