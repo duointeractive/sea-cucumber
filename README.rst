@@ -51,7 +51,7 @@ Add 'seacucumber' to your INSTALLED_APPS
 
 Verify at least one email address to send from with amazon::
 
-	./manage.py ses_verify --command verify --email batman@gothom.gov
+	./manage.py ses_verify --command verify --email batman@gotham.gov
 
 After you've run the verification above you will need to check the verfied email
 account and click the authorization link in the email amazon sends you.
@@ -62,9 +62,9 @@ To confirm the verified email addresses on your account::
 
 To remove a previously verified address::
 
-	./manage.py ses_verify --command delete --email batman@gothom.gov
+	./manage.py ses_verify --command delete --email batman@gotham.gov
 
-Now, when you use ``django.core.mail.send_mail``, Simple Email Service will
+Now, when you use ``django.core.mail.send_mail`` from a verfied email address, Simple Email Service will
 send the messages by default.
 
 Django Builtin-in Error Emails
