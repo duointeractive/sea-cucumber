@@ -25,7 +25,11 @@ CLASSIFIERS = [
 setup(
     name='seacucumber',
     version=version_str,
-    packages=['seacucumber'],
+    packages=[
+        'seacucumber',
+        'seacucumber.management',
+        'seacucumber.management.commands',
+    ],
     author='Gregory Taylor',
     author_email='gtaylor@duointeractive.com',
     url='https://github.com/duointeractive/sea-cucumber/',
