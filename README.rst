@@ -1,6 +1,6 @@
-============
-Sea Cucumber
-============
+================
+Sea Cucumber 1.0
+================
 :Info: A Django email backend for Amazon Simple Email Service, backed by django-celery_
 :Author: DUO Interactive, LLC
 :Inspired by: Harry Marr's django-ses_.
@@ -17,19 +17,20 @@ Configuring, maintaining, and dealing with some complicated edge cases can be
 time-consuming. Sending emails with Sea Cucumber might be attractive to you if:
 
 * You don't want to maintain mail servers.
-* You are already deployed on EC2 (In-bound traffic to SES is free from EC2
-  instances). This is not a big deal either way, but is an additional perk if 
-  you happen to be on AWS.
+* Your mail server is slow or unreliable, blocking your views from rendering.
 * You need to send a high volume of email.
 * You don't want to have to worry about PTR records, Reverse DNS, email
   whitelist/blacklist services.
+* You are already deployed on EC2 (In-bound traffic to SES is free from EC2
+  instances). This is not a big deal either way, but is an additional perk if 
+  you happen to be on AWS.
 
-Getting going
-=============
+Installation
+============
 Assuming you've got Django_ and django-celery_ installed, you'll need 
-Boto_ 2.0b4 or higher. Boto_ is a Python library that wraps the AWS API.
+Boto_ 2.0b4 or higher. boto_ is a Python library that wraps the AWS API.
 
-You can do the following to install Boto_ 2.0b4 (we're using --upgrade here to
+You can do the following to install boto_ 2.0b4 (we're using --upgrade here to
 make sure you get 2.0b4)::
 
     pip install --upgrade boto
@@ -47,25 +48,35 @@ Add the following to your settings.py::
     AWS_ACCESS_KEY_ID = 'YOUR-ACCESS-KEY-ID'
     AWS_SECRET_ACCESS_KEY = 'YOUR-SECRET-ACCESS-KEY'
 
-Add 'seacucumber' to your INSTALLED_APPS
+    # Make sure to do this if you want the ``ses_address`` management command.
+    INSTALLED_APPS = (
+        ...
+        'seacucumber'
+    )
 
-Verify at least one email address to send from with amazon::
+Email Address Verification
+==========================
 
-	./manage.py ses_verify --command verify --email batman@gotham.gov
+Before you can send email 'from' an email address through SES, you must first 
+verify your ownership of it::
 
-After you've run the verification above you will need to check the verfied email
-account and click the authorization link in the email amazon sends you.
+	./manage.py ses_address verify batman@gotham.gov
 
-To confirm the verified email addresses on your account::
+After you've run the verification above you will need to check the email
+account's inbox (from your mail client or provider's web interface) and click 
+the authorization link in the email Amazon sends you. After that, your address
+is ready to go.
 
-	./manage.py ses_verify --command list
+To confirm the verified email is ready to go::
+
+	./manage.py ses_address list
 
 To remove a previously verified address::
 
-	./manage.py ses_verify --command delete --email batman@gotham.gov
+	./manage.py ses_address delete batman@gotham.gov
 
-Now, when you use ``django.core.mail.send_mail`` from a verfied email address, Simple Email Service will
-send the messages by default.
+Now, when you use ``django.core.mail.send_mail`` from a verified email address, 
+Sea Cucumber will handle message delivery.
 
 Django Builtin-in Error Emails
 ==============================
@@ -75,9 +86,18 @@ If you'd like Django's `Builtin Email Error Reporting`_ to function properly
 ``SERVER_EMAIL`` setting to one of your SES-verified addresses. Otherwise, your
 error emails will all fail and you'll be blissfully unaware of a problem.
 
-*Note:* You will need to sign up for SES_ and verify any emails you're going
-to use in the `from_email` argument to `django.core.mail.send_email()`. Boto_
-has a `verify_email_address()` method: https://github.com/boto/boto/blob/master/boto/ses/connection.py
+*Note:* You can use the included ``ses_address`` management command to handle
+address verification.
+
+Getting Help
+============
+
+If you have any questions, feel free to either post them to our
+`issue tracker`_, or visit us on IRC at:
+
+:Host: irc.freenode.net
+:Port: 6667
+:Room: #duo
 
 .. _django-ses: https://github.com/hmarr/django-ses
 .. _django-celery: http://ask.github.com/django-celery/
@@ -86,3 +106,4 @@ has a `verify_email_address()` method: https://github.com/boto/boto/blob/master/
 .. _Django: http://djangoproject.com
 .. _Boto: http://boto.cloudhackers.com/
 .. _SES: http://aws.amazon.com/ses/
+.. _issue tracker: https://github.com/duointeractive/django-athumb/issues
