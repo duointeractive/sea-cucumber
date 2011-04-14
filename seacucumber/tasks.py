@@ -12,8 +12,6 @@ class SendEmailTask(Task):
     default_retry_delay = 60
 
     def __init__(self, *args, **kwargs):
-        super(SendEmailTask, self).__init__(*args, **kwargs)
-
         self.connection = None
         self._access_key_id = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
         self._access_key = getattr(settings, 'AWS_SECRET_ACCESS_KEY', None)

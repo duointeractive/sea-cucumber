@@ -1,5 +1,4 @@
 from django.core.mail.backends.base import BaseEmailBackend
-
 from seacucumber.tasks import SendEmailTask
 
 class SESBackend(BaseEmailBackend):
