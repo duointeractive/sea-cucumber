@@ -11,8 +11,8 @@ Sea Cucumber is a mail backend for Django_. Instead of sending emails
 through a traditional SMTP mail server, Sea Cucumber routes email through
 Amazon Web Services' excellent Simple Email Service (SES_) via django-celery_.
 
-Why SES instead of SMTP?
-========================
+Why Sea Cucumber/SES instead of SMTP?
+=====================================
 Configuring, maintaining, and dealing with some complicated edge cases can be
 time-consuming. Sending emails with Sea Cucumber might be attractive to you if:
 
