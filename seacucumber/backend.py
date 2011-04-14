@@ -1,3 +1,9 @@
+"""
+This module contains the SESBackend class, which is what you'll want to set in
+your settings.py::
+
+    EMAIL_BACKEND = 'seacucumber.backend.SESBackend'
+"""
 from django.core.mail.backends.base import BaseEmailBackend
 from seacucumber.tasks import SendEmailTask
 
@@ -9,6 +15,13 @@ class SESBackend(BaseEmailBackend):
         """
         Sends one or more EmailMessage objects and returns the number of
         email messages sent.
+        
+        :param EmailMessage email_messages: A list of Django's EmailMessage
+            object instances.
+        :rtype: int
+        :returns: The number of EmailMessage objects that were successfully
+            queued up. Note that these are not in a state where we can
+            guarantee delivery just yet.
         """
         num_sent = 0
         for message in email_messages:

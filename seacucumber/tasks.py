@@ -1,31 +1,39 @@
+"""
+Supporting celery tasks go in this module. The primarily interesting one is
+SendEmailTask, which handles sending a single Django EmailMessage object.
+"""
 from django.conf import settings
-from boto.ses import SESConnection
 from celery.task import Task
+from boto.ses import SESConnection
+from seacucumber.util import get_boto_ses_connection
 
 class SendEmailTask(Task):
     """
     Sends an email through Boto's SES API module.
     """
-    # TODO: Make this a setting.
-    max_retries = 60
-    # TODO: Make this a setting.
-    default_retry_delay = 60
+    max_retries = getattr(settings, 'CUCUMBER_MAX_RETRIES', 60)
+    retry_delay = getattr(settings, 'CUCUMBER_RETRY_DELAY', 60)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
+        # A boto.ses.SESConnection object, after running _open_ses_conn().
         self.connection = None
-        self._access_key_id = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
-        self._access_key = getattr(settings, 'AWS_SECRET_ACCESS_KEY', None)
-        self._api_endpoint = getattr(settings, 'AWS_SES_API_HOST',
-                                     SESConnection.DefaultHost)
 
     def run(self, from_email, recipients, message):
         """
-        This does the dirty work.
+        This does the dirty work. Connects to Amazon SES via boto and fires
+        off the message.
         
-        TOOD: Document params.
+        :param str from_email: The email address the message will show as
+            originating from.
+        :param list recipients: A list of email addresses to send the
+            message to.
+        :param str message: The body of the message.
         """
         self._open_ses_conn()
         try:
+            # We use the send_raw_email func here because the Django
+            # EmailMessage object we got these values from constructs all of
+            # the headers and such.
             self.connection.send_raw_email(
                 source=from_email,
                 destinations=recipients,
@@ -33,11 +41,14 @@ class SendEmailTask(Task):
             )
         except SESConnection.ResponseError:
             self.retry(
-                countdown=self.default_retry_delay,
+                countdown=self.retry_delay,
                 exc=SESConnection.ResponseError,
             )
         self._close_ses_conn()
 
+        # We shouldn't ever block long enough to see this, but here it is
+        # just in case (for debugging?).
+        return True
 
     def _open_ses_conn(self):
         """
@@ -47,25 +58,11 @@ class SendEmailTask(Task):
         if self.connection:
             return
 
-        try:
-            self.connection = SESConnection(
-                aws_access_key_id=self._access_key_id,
-                aws_secret_access_key=self._access_key,
-                host=self._api_endpoint,
-            )
-        # TODO: Get more specific with this exception block.
-        except:
-            self.retry(
-                countdown=self.default_retry_delay,
-            )
+        self.connection = get_boto_ses_connection()
 
     def _close_ses_conn(self):
         """
         Close any open HTTP connections to the API server.
         """
-        try:
-            self.connection.close()
-            self.connection = None
-        except:
-            # It doesn't really matter at this point.
-            pass
+        self.connection.close()
+        self.connection = None
