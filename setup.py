@@ -1,7 +1,7 @@
 from setuptools import setup
 import seacucumber
 
-DESCRIPTION = "A Django email backend for Amazon Simple Email Service, backed by celery"
+DESCRIPTION = "A Django email backend for Amazon Simple Email Service, backed by celery."
 
 LONG_DESCRIPTION = None
 try:
