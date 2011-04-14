@@ -11,10 +11,9 @@ class SendEmailTask(Task):
     """
     Sends an email through Boto's SES API module.
     """
-    max_retries = getattr(settings, 'CUCUMBER_MAX_RETRIES', 60)
-    retry_delay = getattr(settings, 'CUCUMBER_RETRY_DELAY', 60)
-
     def __init__(self):
+        self.max_retries = getattr(settings, 'CUCUMBER_MAX_RETRIES', 60)
+        self.default_retry_delay = getattr(settings, 'CUCUMBER_RETRY_DELAY', 60)
         # A boto.ses.SESConnection object, after running _open_ses_conn().
         self.connection = None
 
@@ -39,12 +38,8 @@ class SendEmailTask(Task):
                 destinations=recipients,
                 raw_message=message,
             )
-        except SESConnection.ResponseError:
-            self.retry(
-                countdown=self.retry_delay,
-                exc=SESConnection.ResponseError,
-            )
-        self._close_ses_conn()
+        except Exception, exc:
+            self.retry(exc=exc)
 
         # We shouldn't ever block long enough to see this, but here it is
         # just in case (for debugging?).
@@ -59,10 +54,3 @@ class SendEmailTask(Task):
             return
 
         self.connection = get_boto_ses_connection()
-
-    def _close_ses_conn(self):
-        """
-        Close any open HTTP connections to the API server.
-        """
-        self.connection.close()
-        self.connection = None
