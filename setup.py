@@ -1,5 +1,4 @@
-from setuptools import setup, find_packages
-import os
+from setuptools import setup
 import seacucumber
 
 DESCRIPTION = "A Django email backend for Amazon Simple Email Service, backed by celery"
@@ -13,7 +12,7 @@ except:
 version_str = '%d.%d' % (seacucumber.VERSION[0], seacucumber.VERSION[1])
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
