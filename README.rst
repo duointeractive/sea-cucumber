@@ -1,5 +1,5 @@
 ================
-Sea Cucumber 1.0
+Sea Cucumber 1.2
 ================
 :Info: A Django email backend for Amazon Simple Email Service, backed by django-celery_
 :Author: DUO Interactive, LLC

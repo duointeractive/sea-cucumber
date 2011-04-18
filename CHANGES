@@ -1,5 +1,9 @@
 Sea Cucumber Change Log
 
+1.2
+===
+* Added the ses_usage management command. Shows usage and quota details.
+
 1.1
 ===
 * Fixed minor packaging issue.
