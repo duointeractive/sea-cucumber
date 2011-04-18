@@ -99,7 +99,7 @@ Then check your SES max rate by running::
     ./manage.py ses_usage
     
 If your rate limit is more than ``1.0/sec``, you'll need to set that numeric
-value in your ``CUCUMBER_RATE_LIMIT`` setting like so:
+value in your ``CUCUMBER_RATE_LIMIT`` setting like so::
 
     # Rate limit to three outgoing SES emails a second.
     CUCUMBER_RATE_LIMIT = 3
