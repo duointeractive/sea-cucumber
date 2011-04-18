@@ -78,6 +78,40 @@ To remove a previously verified address::
 Now, when you use ``django.core.mail.send_mail`` from a verified email address, 
 Sea Cucumber will handle message delivery.
 
+Rate Limiting
+=============
+
+If you are a new SES user, your default quota will be 1,000 emails per 24
+hour period at a maximum rate of one email per second. Sea Cucumber defaults
+to enforcing the one email per second at the celery level, but you must not
+have disabled celery rate limiting. 
+
+If you have this::
+
+    CELERY_DISABLE_RATE_LIMITS = True
+    
+Change it to this::
+
+    CELERY_DISABLE_RATE_LIMITS = False
+    
+Then check your SES max rate by running::
+
+    ./manage.py ses_usage
+    
+If your rate limit is more than ``1.0/sec``, you'll need to set that numeric
+value in your ``CUCUMBER_RATE_LIMIT`` setting like so:
+
+    # Rate limit to three outgoing SES emails a second.
+    CUCUMBER_RATE_LIMIT = 3
+    
+Failure to follow the rate limits may result in BotoServerError exceptions
+being raised, which makes celery unhappy.
+
+As a general note, your quota and max send rate will increase with usage, so
+check the ``ses_usage`` management command again at a later date after you've
+sent some emails. You'll need to manually bump up your rate settings in
+``settings.py``.
+
 Django Builtin-in Error Emails
 ==============================
 

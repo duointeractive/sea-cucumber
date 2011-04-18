@@ -14,6 +14,7 @@ class SendEmailTask(Task):
     def __init__(self):
         self.max_retries = getattr(settings, 'CUCUMBER_MAX_RETRIES', 60)
         self.default_retry_delay = getattr(settings, 'CUCUMBER_RETRY_DELAY', 60)
+        self.rate_limit = getattr(settings, 'CUCUMBER_RATE_LIMIT', 1)
         # A boto.ses.SESConnection object, after running _open_ses_conn().
         self.connection = None
 
