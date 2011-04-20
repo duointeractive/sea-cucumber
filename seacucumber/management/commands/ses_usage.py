@@ -57,11 +57,11 @@ class Command(BaseCommand):
             self._update_day_dict(data_point, day_dict)      
 
         for day in [current_day, prev_day]:
-            print "--- %s ---" % day['HeaderName']
-            print "  Delivery attempts: %s" % day['DeliveryAttempts']
-            print "  Bounces: %s" % day['Bounces']
-            print "  Rejects: %s" % day['Rejects']
-            print "  Complaints: %s" % day['Complaints']
+            print "--- %s ---" % day.get('HeaderName', 0)
+            print "  Delivery attempts: %s" % day.get('DeliveryAttempts', 0)
+            print "  Bounces: %s" % day.get('Bounces', 0)
+            print "  Rejects: %s" % day.get('Rejects', 0)
+            print "  Complaints: %s" % day.get('Complaints', 0)
         
     def _is_data_from_today(self, data_point):
         """
