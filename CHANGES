@@ -1,5 +1,9 @@
 Sea Cucumber Change Log
 
+1.3
+===
+* Assume default of 0 for current/prev day stats when no mails have been sent.
+
 1.2
 ===
 * Added support for rate limiting outbound emails per second, to make sure we're
