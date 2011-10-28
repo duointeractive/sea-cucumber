@@ -2,19 +2,25 @@
 Various utility functions.
 """
 from django.conf import settings
+import boto
 from boto.ses import SESConnection
 
 def get_boto_ses_connection():
     """
     Shortcut for instantiating and returning a boto SESConnection object.
-    
+
     :rtype: boto.ses.SESConnection
     :returns: A boto SESConnection object, from which email sending is done.
     """
     access_key_id = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
     access_key = getattr(settings, 'AWS_SECRET_ACCESS_KEY', None)
-    api_endpoint = getattr(settings, 'AWS_SES_API_HOST',
-                           SESConnection.DefaultHost)
+    api_endpoint = getattr(settings, 'AWS_SES_API_HOST', None)
+    if not api_endpoint:
+        # This varies depending on boto version.
+        if boto.__version__.startswith('2.0'):
+            api_endpoint = SESConnection.DefaultHost
+        else:
+            api_endpoint = SESConnection.DefaultRegionEndpoint
 
     return SESConnection(
         aws_access_key_id=access_key_id,
