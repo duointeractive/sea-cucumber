@@ -3,6 +3,7 @@ Sea Cucumber Change Log
 1.3
 ===
 * Assume default of 0 for current/prev day stats when no mails have been sent.
+* Remove some code that didn't work for boto 2.1.
 
 1.2
 ===

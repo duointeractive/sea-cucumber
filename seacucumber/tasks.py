@@ -22,7 +22,7 @@ class SendEmailTask(Task):
         """
         This does the dirty work. Connects to Amazon SES via boto and fires
         off the message.
-        
+
         :param str from_email: The email address the message will show as
             originating from.
         :param list recipients: A list of email addresses to send the
