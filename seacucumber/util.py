@@ -3,7 +3,6 @@ Various utility functions.
 """
 from django.conf import settings
 import boto
-from boto.ses import SESConnection
 
 def get_boto_ses_connection():
     """
@@ -14,16 +13,8 @@ def get_boto_ses_connection():
     """
     access_key_id = getattr(settings, 'AWS_ACCESS_KEY_ID', None)
     access_key = getattr(settings, 'AWS_SECRET_ACCESS_KEY', None)
-    api_endpoint = getattr(settings, 'AWS_SES_API_HOST', None)
-    if not api_endpoint:
-        # This varies depending on boto version.
-        if boto.__version__.startswith('2.0'):
-            api_endpoint = SESConnection.DefaultHost
-        else:
-            api_endpoint = SESConnection.DefaultRegionEndpoint
 
-    return SESConnection(
+    return boto.connect_ses(
         aws_access_key_id=access_key_id,
         aws_secret_access_key=access_key,
-        host=api_endpoint,
     )
