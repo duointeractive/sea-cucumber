@@ -3,11 +3,7 @@ import seacucumber
 
 DESCRIPTION = "A Django email backend for Amazon Simple Email Service, backed by celery."
 
-LONG_DESCRIPTION = None
-try:
-    LONG_DESCRIPTION = open('README.rst').read()
-except:
-    pass
+LONG_DESCRIPTION = open('README.rst').read()
 
 version_str = '%d.%d' % (seacucumber.VERSION[0], seacucumber.VERSION[1])
 
@@ -37,5 +33,5 @@ setup(
     long_description=LONG_DESCRIPTION,
     platforms=['any'],
     classifiers=CLASSIFIERS,
-    install_requires=['boto'],
+    install_requires=['boto>=2.2.1'],
 )

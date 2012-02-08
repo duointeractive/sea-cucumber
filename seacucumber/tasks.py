@@ -2,10 +2,13 @@
 Supporting celery tasks go in this module. The primarily interesting one is
 SendEmailTask, which handles sending a single Django EmailMessage object.
 """
+import logging
 from django.conf import settings
 from celery.task import Task
-from boto.ses import SESConnection
+from boto.ses.exceptions import SESAddressBlacklistedError, SESDomainEndsWithDotError
 from seacucumber.util import get_boto_ses_connection
+
+logger = logging.getLogger(__name__)
 
 class SendEmailTask(Task):
     """
@@ -39,7 +42,29 @@ class SendEmailTask(Task):
                 destinations=recipients,
                 raw_message=message,
             )
+        except SESAddressBlacklistedError, exc:
+            # Blacklisted users are those which delivery failed for in the
+            # last 24 hours. They'll eventually be automatically removed from
+            # the blacklist, but for now, this address is marked as
+            # undeliverable to.
+            logger.warning(
+                'Attempted to email a blacklisted user: %s' % recipients,
+                exc_info=exc,
+                extra={'trace': True}
+            )
+            return False
+        except SESDomainEndsWithDotError, exc:
+            # Domains ending in a dot are simply invalid.
+            logger.warning(
+                'Invalid recipient, ending in dot: %s' % recipients,
+                exc_info=exc,
+                extra={'trace': True}
+            )
+            return False
         except Exception, exc:
+            # Something else happened that we haven't explicitly forbade
+            # retry attempts for.
+            #noinspection PyUnresolvedReferences
             self.retry(exc=exc)
 
         # We shouldn't ever block long enough to see this, but here it is

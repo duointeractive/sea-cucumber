@@ -1,5 +1,11 @@
 Sea Cucumber Change Log
 
+1.4
+===
+
+* Take advantage of new SES exceptions in boto to prevent the re-trying of
+  bounced or invalid email addresses.
+
 1.3
 ===
 * Assume default of 0 for current/prev day stats when no mails have been sent.
