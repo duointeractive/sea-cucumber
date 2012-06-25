@@ -7,6 +7,7 @@ your settings.py::
 from django.core.mail.backends.base import BaseEmailBackend
 from seacucumber.tasks import SendEmailTask
 
+
 class SESBackend(BaseEmailBackend):
     """
     A Django Email backend that uses Amazon's Simple Email Service.
@@ -15,7 +16,7 @@ class SESBackend(BaseEmailBackend):
         """
         Sends one or more EmailMessage objects and returns the number of
         email messages sent.
-        
+
         :param EmailMessage email_messages: A list of Django's EmailMessage
             object instances.
         :rtype: int
@@ -29,8 +30,7 @@ class SESBackend(BaseEmailBackend):
             SendEmailTask.delay(
                 message.from_email,
                 message.recipients(),
-                message.message().as_string(),
+                message.message().as_string().decode('utf8'),
             )
             num_sent += 1
         return num_sent
-
