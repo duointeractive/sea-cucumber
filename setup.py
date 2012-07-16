@@ -1,11 +1,8 @@
 from setuptools import setup
-import seacucumber
 
 DESCRIPTION = "A Django email backend for Amazon Simple Email Service, backed by celery."
 
 LONG_DESCRIPTION = open('README.rst').read()
-
-version_str = '%d.%d' % (seacucumber.VERSION[0], seacucumber.VERSION[1])
 
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
@@ -19,7 +16,7 @@ CLASSIFIERS = [
 
 setup(
     name='seacucumber',
-    version=version_str,
+    version='1.5',
     packages=[
         'seacucumber',
         'seacucumber.management',
@@ -33,5 +30,5 @@ setup(
     long_description=LONG_DESCRIPTION,
     platforms=['any'],
     classifiers=CLASSIFIERS,
-    install_requires=['boto>=2.2.1'],
+    install_requires=['boto>=2.3.0'],
 )
