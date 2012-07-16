@@ -1,5 +1,14 @@
 Sea Cucumber Change Log
 
+1.5
+===
+
+* Correctly decode email bodies as UTF-8 before handing message off to
+  the SendEmailTask that sends via boto. Fixes issues with UTF characters in
+  email bodies resulting in errors.
+* Minimum supported boto version is now 2.3 so we can make use of the more
+  fine-grained SES exceptions.
+
 1.4
 ===
 
