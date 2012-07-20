@@ -30,7 +30,7 @@ class SESBackend(BaseEmailBackend):
             SendEmailTask.delay(
                 message.from_email,
                 message.recipients(),
-                message.message().as_string().decode('utf8'),
+                message.message().as_string(),
             )
             num_sent += 1
         return num_sent
