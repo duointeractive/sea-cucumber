@@ -42,11 +42,9 @@ class Command(BaseCommand):
         stats = stats['SendDataPoints']
         
         today = datetime.date.today()
-        yesterday = today - datetime.timedelta(days=1)
         current_day = {'HeaderName': 'Current Day: %s/%s' % (today.month, 
                                                              today.day)}
-        prev_day = {'HeaderName': 'Yesterday: %s/%s' % (yesterday.month,
-                                                        yesterday.day)}
+        prev_day = {'HeaderName': 'Past two weeks'}
         
         for data_point in stats:
             if self._is_data_from_today(data_point):
