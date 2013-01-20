@@ -5,7 +5,7 @@ your settings.py::
     EMAIL_BACKEND = 'seacucumber.backend.SESBackend'
 """
 from django.core.mail.backends.base import BaseEmailBackend
-from seacucumber.tasks import SendEmailTask
+from seacucumber.tasks import send_email
 
 
 class SESBackend(BaseEmailBackend):
@@ -27,7 +27,7 @@ class SESBackend(BaseEmailBackend):
         num_sent = 0
         for message in email_messages:
             # Hand this off to a celery task.
-            SendEmailTask.delay(
+            send_email.delay(
                 message.from_email,
                 message.recipients(),
                 message.message().as_string().decode('utf8'),
