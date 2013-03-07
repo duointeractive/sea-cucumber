@@ -1,6 +1,6 @@
-================
-Sea Cucumber 1.5
-================
+==================
+Sea Cucumber 1.5.1
+==================
 :Info: A Django email backend for Amazon Simple Email Service, backed by django-celery_
 :Author: DUO Interactive, LLC
 :Inspired by: Harry Marr's django-ses_.
