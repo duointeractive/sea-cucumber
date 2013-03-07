@@ -179,3 +179,4 @@ If you have any questions, feel free to either post them to our
 .. _SES: http://aws.amazon.com/ses/
 .. _issue tracker: https://github.com/duointeractive/django-athumb/issues
 .. _DomainKeys: http://dkim.org/
+.. _pydkim: http://hewgill.com/pydkim/
