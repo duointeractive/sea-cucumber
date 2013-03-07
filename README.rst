@@ -124,7 +124,7 @@ see http://support.google.com/mail/bin/answer.py?hl=en&answer=1311182.
 
 To enable DKIM signing you should install the pydkim_ package and specify values
 for the ``DKIM_PRIVATE_KEY`` and ``DKIM_DOMAIN`` settings.  You can generate a
-private key with a command such as ``openssl genrsa 512`` and get the public key
+private key with a command such as ``openssl genrsa 1024`` and get the public key
 portion with ``openssl rsa -pubout <private.key``.  The public key should be
 published to ``ses._domainkey.example.com`` if your domain is example.com.  You 
 can use a different name instead of ``ses`` by changing the ``DKIM_SELECTOR``
