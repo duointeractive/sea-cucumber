@@ -6,7 +6,7 @@ import logging
 from django.conf import settings
 from celery.task import Task
 from boto.ses.exceptions import SESAddressBlacklistedError, SESDomainEndsWithDotError
-from seacucumber.util import get_boto_ses_connection
+from seacucumber.util import get_boto_ses_connection, dkim_sign
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +40,7 @@ class SendEmailTask(Task):
             self.connection.send_raw_email(
                 source=from_email,
                 destinations=recipients,
-                raw_message=message,
+                raw_message=dkim_sign(message),
             )
         except SESAddressBlacklistedError, exc:
             # Blacklisted users are those which delivery failed for in the
