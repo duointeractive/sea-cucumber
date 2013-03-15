@@ -1,5 +1,11 @@
 Sea Cucumber Change Log
 
+1.5.2
+=====
+
+* Removed hardcoded utf-8 decoding. Appears to be related to version of
+  boto in use (fails with 2.4, required with 2.5)
+
 1.5.1
 =====
 
