@@ -7,6 +7,7 @@ from django.conf import settings
 from celery.task import Task
 from boto.ses.exceptions import SESAddressBlacklistedError, SESDomainEndsWithDotError
 from seacucumber.util import get_boto_ses_connection, dkim_sign
+from seacucumber import FORCE_UNICODE
 
 logger = logging.getLogger(__name__)
 
@@ -37,10 +38,13 @@ class SendEmailTask(Task):
             # We use the send_raw_email func here because the Django
             # EmailMessage object we got these values from constructs all of
             # the headers and such.
+            signed_msg = dkim_sign(message)
+            if FORCE_UNICODE:
+                signed_msg = unicode(signed_msg, 'utf-8')
             self.connection.send_raw_email(
                 source=from_email,
                 destinations=recipients,
-                raw_message=dkim_sign(message),
+                raw_message=signed_msg,
             )
         except SESAddressBlacklistedError, exc:
             # Blacklisted users are those which delivery failed for in the
