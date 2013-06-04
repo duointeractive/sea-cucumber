@@ -65,7 +65,14 @@ class SendEmailTask(Task):
             # Something else happened that we haven't explicitly forbade
             # retry attempts for.
             #noinspection PyUnresolvedReferences
+            logger.error(
+                'Something went wrong; retrying: %s' % recipients,
+                exc_info=exc,
+                extra={'trace': True}
+            )
             self.retry(exc=exc)
+        else:
+            logger.info('An email has been successfully sent: %s' % recipients)
 
         # We shouldn't ever block long enough to see this, but here it is
         # just in case (for debugging?).
