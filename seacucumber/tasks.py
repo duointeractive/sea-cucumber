@@ -71,6 +71,8 @@ class SendEmailTask(Task):
                 extra={'trace': True}
             )
             self.retry(exc=exc)
+        else:
+            logger.info('An email has been successfully sent: %s' % recipients)
 
         # We shouldn't ever block long enough to see this, but here it is
         # just in case (for debugging?).
