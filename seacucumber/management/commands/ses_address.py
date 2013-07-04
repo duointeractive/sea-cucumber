@@ -2,7 +2,8 @@
 Handles management of SES email addresses.
 """
 from django.core.management.base import BaseCommand, CommandError
-from django.core.validators import email_re
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from seacucumber.util import get_boto_ses_connection
 
 class Command(BaseCommand):
@@ -56,7 +57,7 @@ class Command(BaseCommand):
         """
         Given an action and an email (can be None), figure out what to do
         with the validated inputs.
-        
+
         :param str action: The action. Must be one of self.valid_actions.
         :type email: str or None
         :param email: Either an email address, or None if the action doesn't
@@ -83,7 +84,7 @@ class Command(BaseCommand):
         """
         Convenience method for returning a SES connection, and handling any
         errors that may appear.
-        
+
         :rtype: boto.ses.SESConnection
         """
         try:
@@ -95,11 +96,13 @@ class Command(BaseCommand):
     def _is_valid_email(self, email):
         """
         Given an email address, make sure that it is well-formed.
-        
+
         :param str email: The email address to validate.
         :rtype: bool
         :returns: True if the email address is valid, False if not.
         """
-        if email_re.match(email):
+        try:
+            validate_email(email)
             return True
-        return False
+        except ValidationError:
+            return False
