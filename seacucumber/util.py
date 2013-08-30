@@ -12,6 +12,11 @@ try:
 except ImportError:
     HAS_DKIM = False
 
+DKIM_DOMAIN = getattr(settings, "DKIM_DOMAIN", None)
+DKIM_PRIVATE_KEY = getattr(settings, 'DKIM_PRIVATE_KEY', None)
+DKIM_SELECTOR = getattr(settings, 'DKIM_SELECTOR', 'ses')
+DKIM_HEADERS = getattr(settings, 'DKIM_HEADERS', ('From', 'To', 'Cc', 'Subject'))
+
 
 def get_boto_ses_connection():
     """
@@ -21,10 +26,12 @@ def get_boto_ses_connection():
     :returns: A boto SESConnection object, from which email sending is done.
     """
 
-    access_key_id = getattr(settings, 'CUCUMBER_SES_ACCESS_KEY_ID',
-                            getattr(settings, 'AWS_ACCESS_KEY_ID', None))
-    access_key = getattr(settings, 'CUCUMBER_SES_SECRET_ACCESS_KEY',
-                         getattr(settings, 'AWS_SECRET_ACCESS_KEY', None))
+    access_key_id = getattr(
+        settings, 'CUCUMBER_SES_ACCESS_KEY_ID',
+        getattr(settings, 'AWS_ACCESS_KEY_ID', None))
+    access_key = getattr(
+        settings, 'CUCUMBER_SES_SECRET_ACCESS_KEY',
+        getattr(settings, 'AWS_SECRET_ACCESS_KEY', None))
 
     return boto.connect_ses(
         aws_access_key_id=access_key_id,
@@ -40,16 +47,13 @@ def dkim_sign(message):
     if not HAS_DKIM:
         return message
 
-    dkim_domain = getattr(settings, "DKIM_DOMAIN", None)
-    dkim_key = getattr(settings, 'DKIM_PRIVATE_KEY', None)
-    dkim_selector = getattr(settings, 'DKIM_SELECTOR', 'ses')
-    dkim_headers = getattr(settings, 'DKIM_HEADERS', ('From', 'To', 'Cc', 'Subject'))
+    if not (DKIM_DOMAIN and DKIM_PRIVATE_KEY):
+        return message
 
-    if dkim_domain and dkim_key:
-        sig = dkim.sign(message,
-                        dkim_selector,
-                        dkim_domain,
-                        dkim_key,
-                        include_headers=dkim_headers)
-        message = sig + message
-    return message
+    sig = dkim.sign(
+        message,
+        DKIM_SELECTOR,
+        DKIM_DOMAIN,
+        DKIM_PRIVATE_KEY,
+        include_headers=DKIM_HEADERS)
+    return sig + message
