@@ -3,7 +3,10 @@ Sea Cucumber Change Log
 1.5.1
 =====
 
-* Add dkim signing support
+* Don't auto retry for clearly mal-formed addresses. (gtaylor)
+* Use validate_email instead of deprecated email_re. (joshuakarjala)
+* Add dkim signing support. (benburry)
+* Add a custom SES AWS credential setting. (dmitry-mukhin)
 
 1.5
 ===
