@@ -5,6 +5,13 @@ Various utility functions.
 from django.conf import settings
 import boto
 
+# dkim isn't required, but we'll use it if we have it.
+try:
+    import dkim
+    HAS_DKIM = True
+except ImportError:
+    HAS_DKIM = False
+
 
 def get_boto_ses_connection():
     """
@@ -30,9 +37,7 @@ def dkim_sign(message):
     :returns: A signed email message if dkim package and settings are available.
     """
 
-    try:
-        import dkim
-    except ImportError:
+    if not HAS_DKIM:
         return message
 
     dkim_domain = getattr(settings, "DKIM_DOMAIN", None)
