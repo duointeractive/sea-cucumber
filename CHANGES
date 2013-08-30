@@ -3,6 +3,8 @@ Sea Cucumber Change Log
 1.5.1
 =====
 
+* BIC: We now require boto 2.8.0 or later. Earlier versions *may* work,
+  but we will make no attempt to support them. (gtaylor)
 * Don't auto retry for clearly mal-formed addresses. (gtaylor)
 * Use validate_email instead of deprecated email_re. (joshuakarjala)
 * Add dkim signing support. (benburry)
