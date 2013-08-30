@@ -4,6 +4,7 @@ your settings.py::
 
     EMAIL_BACKEND = 'seacucumber.backend.SESBackend'
 """
+
 from django.core.mail.backends.base import BaseEmailBackend
 from seacucumber.tasks import SendEmailTask
 
@@ -12,6 +13,7 @@ class SESBackend(BaseEmailBackend):
     """
     A Django Email backend that uses Amazon's Simple Email Service.
     """
+
     def send_messages(self, email_messages):
         """
         Sends one or more EmailMessage objects and returns the number of
@@ -24,6 +26,7 @@ class SESBackend(BaseEmailBackend):
             queued up. Note that these are not in a state where we can
             guarantee delivery just yet.
         """
+
         num_sent = 0
         for message in email_messages:
             # Hand this off to a celery task.

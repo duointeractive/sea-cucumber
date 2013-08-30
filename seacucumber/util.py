@@ -1,6 +1,7 @@
 """
 Various utility functions.
 """
+
 from django.conf import settings
 import boto
 
@@ -12,6 +13,7 @@ def get_boto_ses_connection():
     :rtype: boto.ses.SESConnection
     :returns: A boto SESConnection object, from which email sending is done.
     """
+
     access_key_id = getattr(settings, 'CUCUMBER_SES_ACCESS_KEY_ID',
                             getattr(settings, 'AWS_ACCESS_KEY_ID', None))
     access_key = getattr(settings, 'CUCUMBER_SES_SECRET_ACCESS_KEY',
@@ -24,22 +26,25 @@ def get_boto_ses_connection():
 
 
 def dkim_sign(message):
-    """Return signed email message if dkim package and settings are available."""
+    """
+    :returns: A signed email message if dkim package and settings are available.
+    """
+
     try:
         import dkim
     except ImportError:
-        pass
-    else:
-        dkim_domain = getattr(settings, "DKIM_DOMAIN", None)
-        dkim_key = getattr(settings, 'DKIM_PRIVATE_KEY', None)
-        dkim_selector = getattr(settings, 'DKIM_SELECTOR', 'ses')
-        dkim_headers = getattr(settings, 'DKIM_HEADERS', ('From', 'To', 'Cc', 'Subject'))
+        return message
 
-        if dkim_domain and dkim_key:
-            sig = dkim.sign(message,
-                            dkim_selector,
-                            dkim_domain,
-                            dkim_key,
-                            include_headers=dkim_headers)
-            message = sig + message
+    dkim_domain = getattr(settings, "DKIM_DOMAIN", None)
+    dkim_key = getattr(settings, 'DKIM_PRIVATE_KEY', None)
+    dkim_selector = getattr(settings, 'DKIM_SELECTOR', 'ses')
+    dkim_headers = getattr(settings, 'DKIM_HEADERS', ('From', 'To', 'Cc', 'Subject'))
+
+    if dkim_domain and dkim_key:
+        sig = dkim.sign(message,
+                        dkim_selector,
+                        dkim_domain,
+                        dkim_key,
+                        include_headers=dkim_headers)
+        message = sig + message
     return message
