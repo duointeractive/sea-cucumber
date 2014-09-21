@@ -112,6 +112,20 @@ check the ``ses_usage`` management command again at a later date after you've
 sent some emails. You'll need to manually bump up your rate settings in
 ``settings.py``.
 
+Routing Tasks
+=============
+If you want to route Sea Cucumber task to different queues.
+
+Add this to setting::
+
+    CUCUMBER_ROUTE_QUEUE = 'YOUR-ROUTE-QUEUE'
+
+Then update the celery configuration for routes. Example celeryconfig.py::
+
+    CELERY_ROUTES = {
+        'seacucumber.tasks.#': {'queue': 'YOUR-ROUTE-QUEUE'},
+    }
+
 DKIM
 ====
 
