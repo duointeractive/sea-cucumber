@@ -178,11 +178,7 @@ Getting Help
 ============
 
 If you have any questions, feel free to either post them to our
-`issue tracker`_, or visit us on IRC at:
-
-:Host: irc.freenode.net
-:Port: 6667
-:Room: #duo
+`issue tracker`_.
 
 .. _django-ses: https://github.com/hmarr/django-ses
 .. _django-celery: http://ask.github.com/django-celery/
