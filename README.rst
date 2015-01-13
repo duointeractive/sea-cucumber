@@ -184,7 +184,7 @@ If you have any questions, feel free to either post them to our
 .. _django-ses: https://github.com/hmarr/django-ses
 .. _django-celery: http://ask.github.com/django-celery/
 .. _celery: http://docs.celeryproject.org/en/v2.2.5/index.html
-.. _Builtin Email Error Reporting: http://docs.djangoproject.com/en/1.2/howto/error-reporting/
+.. _Builtin Email Error Reporting: https://docs.djangoproject.com/en/dev/howto/error-reporting/
 .. _Django: http://djangoproject.com
 .. _Boto: http://boto.cloudhackers.com/
 .. _SES: http://aws.amazon.com/ses/
