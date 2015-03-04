@@ -1,5 +1,11 @@
 Sea Cucumber Change Log
 
+1.5.2
+=====
+
+* Correct an old import that relied on an outdated reference
+  in boto.__init__ (lijoantony)
+
 1.5.1
 =====
 

@@ -4,4 +4,4 @@ backed by celery. The interesting bits are in backend.py and tasks.py. The
 rest of the contents of this module are largely optional. 
 """
 # In the form of Major, Minor.
-VERSION = (1, 5, 1)
+VERSION = (1, 5, 2)
