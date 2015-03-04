@@ -3,7 +3,7 @@ Various utility functions.
 """
 
 from django.conf import settings
-import boto
+import boto.ses
 
 # dkim isn't required, but we'll use it if we have it.
 try:
