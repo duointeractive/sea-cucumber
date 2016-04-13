@@ -43,9 +43,10 @@ Install Sea Cucumber::
 Add the following to your settings.py::
 
     EMAIL_BACKEND = 'seacucumber.backend.SESBackend'
-
+    
     # These are optional -- if they're set as environment variables they won't
     # need to be set here as well
+    AWS_SES_REGION_NAME = 'YOUR-REGION'  # Default is us-east-1
     AWS_ACCESS_KEY_ID = 'YOUR-ACCESS-KEY-ID'
     AWS_SECRET_ACCESS_KEY = 'YOUR-SECRET-ACCESS-KEY'
 
@@ -54,6 +55,8 @@ Add the following to your settings.py::
         ...
         'seacucumber'
     )
+
+The region name is optional but keep in mind addresses are linked to a specific region, therefore if you add/verify them in one region they will only be available in that region.
 
 Email Address Verification
 ==========================
