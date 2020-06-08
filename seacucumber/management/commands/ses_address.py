@@ -30,13 +30,16 @@ class Command(BaseCommand):
     # <action> must be one of the following.
     valid_actions = ["verify", "list", "delete"]
 
+    def add_arguments(self, parser):
+        # Kept the argument name args to be compatible with django 1.6+
+        parser.add_argument("args", nargs="+", type=str)
+
     def handle(self, *args, **options):
         """
         Parses/validates, and breaks off into actions.
         """
         if len(args) < 1:
             raise CommandError("Please specify an action. See --help.")
-
         action = args[0]
         email = None
 
@@ -70,10 +73,10 @@ class Command(BaseCommand):
         """
         client = get_boto_ses_client()
         if action == "verify":
-            client.verify_email_address(email)
+            client.verify_email_address(EmailAddress=email)
             print("A verification email has been sent to %s." % email)
         elif action == "delete":
-            client.delete_verified_email_address(email)
+            client.delete_verified_email_address(EmailAddress=email)
             print("You have deleted %s from your SES account." % email)
         elif action == "list":
             verified_result = client.list_verified_email_addresses()
