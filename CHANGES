@@ -1,5 +1,10 @@
 Sea Cucumber Change Log
 
+1.6.1
+=====
+
+* Migrate to boto3
+
 1.5.2
 =====
 
