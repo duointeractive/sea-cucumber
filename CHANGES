@@ -4,6 +4,9 @@ Sea Cucumber Change Log
 =====
 
 * Migrate to boto3
+* Added support for Django 1.7 through Django 3
+* Added support for Python 3
+* Added pre-commit hooks for code quality and linting
 
 1.5.2
 =====
