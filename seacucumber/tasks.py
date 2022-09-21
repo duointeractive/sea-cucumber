@@ -5,7 +5,7 @@ SendEmailTask, which handles sending a single Django EmailMessage object.
 
 import logging
 
-from celery.task import Task
+from celery import Task
 from django.conf import settings
 
 from seacucumber.util import dkim_sign, get_boto_ses_client
