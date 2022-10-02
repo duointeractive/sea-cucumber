@@ -6,6 +6,7 @@ SendEmailTask, which handles sending a single Django EmailMessage object.
 import logging
 
 from celery import Task
+from celery import shared_task
 from django.conf import settings
 
 from seacucumber.util import dkim_sign, get_boto_ses_client
@@ -14,7 +15,7 @@ from seacucumber.util import dkim_sign, get_boto_ses_client
 logger = logging.getLogger(__name__)
 
 
-class SendEmailTask(Task):
+class SendEmailBaseTask(Task):
     """
     Sends an email through Boto's SES API module.
     """
@@ -26,7 +27,7 @@ class SendEmailTask(Task):
 
         self._client = None
 
-    def run(self, from_email, recipients, message):
+    def process(self, from_email, recipients, message):
         """
         This does the dirty work. Connects to Amazon SES via boto and fires
         off the message.
@@ -61,7 +62,7 @@ class SendEmailTask(Task):
             return False
         except client.exceptions.BaseClientException as exc:
             logger.error(
-                "General SES Exception occured while trying to send to %s" % recipients,
+                "General SES Exception occurred while trying to send to %s" % recipients,
                 exc_info=exc,
                 extra={"trace": True},
             )
@@ -90,3 +91,8 @@ class SendEmailTask(Task):
         if not self._client:
             self._client = get_boto_ses_client()
         return self._client
+
+
+@shared_task(bind=True, base=SendEmailBaseTask)
+def send_email_task(self, from_email, recipients, message):
+    return self.process(from_email=from_email, recipients=recipients, message=message)
