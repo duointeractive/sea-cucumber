@@ -1,10 +1,12 @@
 """
 Handles management of SES email addresses.
 """
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
 from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-from seacucumber.util import get_boto_ses_connection
+
+from seacucumber.util import get_boto_ses_client
+
 
 class Command(BaseCommand):
     """
@@ -12,18 +14,25 @@ class Command(BaseCommand):
     email addresses. Make sure to have 'seacucumber' in INSTALLED_APPS, or this
     won't be available.
     """
+
     args = "<action> [<email address>]"
-    help = "Manages SES emails. <action> may be one of the following:\n"\
-           "  verify <email>   Sends a verification request for an address.\n"\
-           "  list             Lists all fully verified addresses.\n"\
-           "  delete <email>   Deletes an address from your SES account.\n\n"\
-           "Examples:\n"\
-           "  ./manage.py ses_address verify some@addres.com\n"\
-           "  ./manage.py ses_address list\n"\
-           "  ./manage.py ses_address delete some@address.com"
+    help = (
+        "Manages SES emails. <action> may be one of the following:\n"
+        "  verify <email>   Sends a verification request for an address.\n"
+        "  list             Lists all fully verified addresses.\n"
+        "  delete <email>   Deletes an address from your SES account.\n\n"
+        "Examples:\n"
+        "  ./manage.py ses_address verify some@addres.com\n"
+        "  ./manage.py ses_address list\n"
+        "  ./manage.py ses_address delete some@address.com"
+    )
 
     # <action> must be one of the following.
-    valid_actions = ['verify', 'list', 'delete']
+    valid_actions = ["verify", "list", "delete"]
+
+    def add_arguments(self, parser):
+        # Kept the argument name args to be compatible with django 1.6+
+        parser.add_argument("args", nargs="+", type=str)
 
     def handle(self, *args, **options):
         """
@@ -31,7 +40,6 @@ class Command(BaseCommand):
         """
         if len(args) < 1:
             raise CommandError("Please specify an action. See --help.")
-
         action = args[0]
         email = None
 
@@ -39,7 +47,7 @@ class Command(BaseCommand):
             message = "Invalid action: %s" % action
             raise CommandError(message)
 
-        if action in ['verify', 'delete']:
+        if action in ["verify", "delete"]:
             if len(args) < 2:
                 message = "Please specify an email address to %s." % action
                 raise CommandError(message)
@@ -63,35 +71,24 @@ class Command(BaseCommand):
         :param email: Either an email address, or None if the action doesn't
             need an email address.
         """
-        connection = self._get_ses_connection()
+        client = get_boto_ses_client()
         if action == "verify":
-            connection.verify_email_address(email)
+            client.verify_email_address(EmailAddress=email)
             print("A verification email has been sent to %s." % email)
         elif action == "delete":
-            connection.delete_verified_email_address(email)
+            client.delete_verified_email_address(EmailAddress=email)
             print("You have deleted %s from your SES account." % email)
         elif action == "list":
-            verified_result = connection.list_verified_email_addresses()
-            if len(verified_result.VerifiedEmailAddresses) > 0:
-                print("The following emails have been fully verified on your "\
-                      "Amazon SES account:")
-                for vemail in verified_result.VerifiedEmailAddresses:
-                    print ("  %s" % vemail)
+            verified_result = client.list_verified_email_addresses()
+            if len(verified_result.get("VerifiedEmailAddresses", [])) > 0:
+                print(
+                    "The following emails have been fully verified on your "
+                    "Amazon SES account:"
+                )
+                for vemail in verified_result.get("VerifiedEmailAddresses"):
+                    print("  %s" % vemail)
             else:
                 print("Your account has no fully verified email addresses yet.")
-
-    def _get_ses_connection(self):
-        """
-        Convenience method for returning a SES connection, and handling any
-        errors that may appear.
-
-        :rtype: boto.ses.SESConnection
-        """
-        try:
-            connection = get_boto_ses_connection()
-            return connection
-        except:
-            raise Exception("Could not connect to Amazon SES service")
 
     def _is_valid_email(self, email):
         """
